@@ -69,34 +69,27 @@ ttsForm.addEventListener('submit', async (e) => {
             },
             body: JSON.stringify({ text, speaker, emotion })
         });
-        if (!response.ok) throw new Error('API error');
 
-        // Try to parse as JSON first
-        let data;
-        try {
-            data = await response.json();
-        } catch {
-            data = null;
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.detail || `API request failed: ${response.status}`);
         }
 
-        // If audioUrl is present, use it
-        if (data && data.audioUrl) {
-            audioPlayer.src = data.audioUrl;
-            downloadLink.href = data.audioUrl;
+        const result = await response.json();
+
+        if (result.status === 200 && result.data && result.data.oss_url) {
+            // Handle successful response with audio URL
+            const audioUrl = result.data.oss_url;
+            audioPlayer.src = audioUrl;
+            downloadLink.href = audioUrl;
             audioSection.classList.remove('hidden');
             statusMessage.textContent = 'Conversion successful!';
+        } else if (result.message) {
+            // Handle API-level errors reported in the JSON body
+            throw new Error(`API Error: ${result.message}`);
         } else {
-            // Otherwise, try to get audio as blob (MP3)
-            const blob = await response.blob();
-            if (blob && blob.type.startsWith('audio')) {
-                const audioUrl = URL.createObjectURL(blob);
-                audioPlayer.src = audioUrl;
-                downloadLink.href = audioUrl;
-                audioSection.classList.remove('hidden');
-                statusMessage.textContent = 'Conversion successful!';
-            } else {
-                throw new Error('No audio returned');
-            }
+            // Fallback for unexpected response structure
+            throw new Error('No audio returned in the response.');
         }
     } catch (err) {
         statusMessage.textContent = 'Error: ' + err.message;
