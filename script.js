@@ -1,112 +1,80 @@
-// TopMedia AI API integration and UI logic
-const PROXY_URL = 'https://proxy.cors.sh/';
-const API_URL = PROXY_URL + 'https://api.topmediai.com/v1/text2speech';
-const API_KEY = '8389ac98a19c49d48f1a022f66f7c6f7'; // Replace with your actual API key
-
+const textToSpeak = document.getElementById('text-to-speak');
+const speakButton = document.getElementById('speak-button');
 const voiceSelect = document.getElementById('voice-select');
 const emotionSelect = document.getElementById('emotion-select');
-const ttsForm = document.getElementById('tts-form');
-const ttsText = document.getElementById('tts-text');
-const convertBtn = document.getElementById('convert-btn');
-const audioSection = document.getElementById('audio-section');
-const audioPlayer = document.getElementById('audio-player');
-const downloadLink = document.getElementById('download-link');
-const statusMessage = document.getElementById('status-message');
+const audioContainer = document.getElementById('audio-container');
 
-// Fetch available voices from TopMedia AI (replace with actual endpoint if available)
-async function fetchVoices() {
-    voiceSelect.innerHTML = '<option value="">Loading real voices from API...</option>';
-    const url = PROXY_URL + 'https://api.topmediai.com/v1/voices_list';
+// ملاحظة: مفتاح API الخاص بك. من الأفضل عدم وضعه مباشرة في الشيفرة البرمجية للتطبيقات الإنتاجية.
+const apiKey = '8389ac98a19c49d48f1a022f66f7c6f7';
+const apiUrl = 'https://api.topmediai.com/v1/text2speech';
+
+// قائمة الأصوات المتاحة (يمكن توسيعها إذا كان لدى API نقطة نهاية للحصول على قائمة الأصوات)
+const voices = [
+    { name: "Brian (Male)", speaker_id: "00151554-3826-11ee-a861-00163e2ac61b" }
+    // يمكنك إضافة المزيد من الأصوات هنا
+];
+
+function populateVoiceList() {
+    voiceSelect.innerHTML = '';
+    voices.forEach(voice => {
+        const option = document.createElement('option');
+        option.textContent = voice.name;
+        option.setAttribute('data-speaker-id', voice.speaker_id);
+        voiceSelect.appendChild(option);
+    });
+}
+
+populateVoiceList();
+
+speakButton.addEventListener('click', async () => {
+    const text = textToSpeak.value;
+    const selectedSpeakerId = voiceSelect.selectedOptions[0].getAttribute('data-speaker-id');
+    const selectedEmotion = emotionSelect.value;
+
+    if (text.trim() === '') {
+        alert('الرجاء إدخال نص.');
+        return;
+    }
+
+    speakButton.disabled = true;
+    speakButton.textContent = '...جاري التحويل';
+
     const options = {
-        method: 'GET',
-        headers: {'x-api-key': API_KEY},
+        method: 'POST',
+        headers: {
+            'x-api-key': apiKey,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            speaker: selectedSpeakerId,
+            text: text,
+            emotion: selectedEmotion
+        })
     };
 
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(apiUrl, options);
         const data = await response.json();
 
-        if (!response.ok) {
-            // The API returned an error (e.g., bad API key)
-            throw new Error(data.detail || `API Error: ${response.status}`);
-        }
-
-        if (data && Array.isArray(data.Voice) && data.Voice.length > 0) {
-            // Success: Populate with real voices
-            voiceSelect.innerHTML = data.Voice.map(v =>
-                `<option value="${v.speaker}">${v.name} (${v.Languagename})</option>`
-            ).join('');
+        if (data.status === 200 && data.data.oss_url) {
+            playAudio(data.data.oss_url);
         } else {
-            // API worked but returned no voices
-            voiceSelect.innerHTML = '<option value="">API returned no voices.</option>';
+            console.error('API Error:', data);
+            alert(`حدث خطأ: ${data.message}`);
         }
     } catch (error) {
-        // Fetch failed (e.g., network issue, CORS) or API returned an error
-        console.error('Failed to fetch voices:', error);
-        voiceSelect.innerHTML = `<option value="">Error: ${error.message}</option>`;
-    }
-}
-
-fetchVoices();
-
-ttsForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = ttsText.value.trim();
-    const speaker = voiceSelect.value;
-    const emotion = emotionSelect.value;
-    if (!text || !speaker) {
-        statusMessage.textContent = 'Please enter text and select a voice.';
-        return;
-    }
-    statusMessage.textContent = 'Converting...';
-    convertBtn.disabled = true;
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_KEY
-            },
-            body: JSON.stringify({ text, speaker, emotion })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.detail || `API request failed: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.status === 200 && result.data && result.data.oss_url) {
-            // Handle successful response with audio URL
-            const audioUrl = result.data.oss_url;
-            audioPlayer.src = audioUrl;
-            downloadLink.href = audioUrl;
-            audioSection.classList.remove('hidden');
-            statusMessage.textContent = 'Conversion successful!';
-        } else if (result.message) {
-            // Handle API-level errors reported in the JSON body
-            throw new Error(`API Error: ${result.message}`);
-        } else {
-            // Fallback for unexpected response structure
-            throw new Error('No audio returned in the response.');
-        }
-    } catch (err) {
-        statusMessage.textContent = 'Error: ' + err.message;
-        audioSection.classList.add('hidden');
+        console.error('Fetch Error:', error);
+        alert('حدث خطأ أثناء الاتصال بالـ API.');
     } finally {
-        convertBtn.disabled = false;
+        speakButton.disabled = false;
+        speakButton.textContent = 'تحدث';
     }
 });
 
-// Smooth page transitions (basic)
-document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        if (this.href.endsWith(window.location.pathname)) return;
-        e.preventDefault();
-        document.body.style.opacity = 0.5;
-        setTimeout(() => {
-            window.location.href = this.href;
-        }, 200);
-    });
-});
+function playAudio(url) {
+    audioContainer.innerHTML = ''; // مسح أي صوت سابق
+    const audio = new Audio(url);
+    audio.controls = true;
+    audio.autoplay = true;
+    audioContainer.appendChild(audio);
+}
