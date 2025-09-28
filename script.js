@@ -1,5 +1,5 @@
 // TopMedia AI API integration and UI logic
-const PROXY_URL = 'https://thingproxy.freeboard.io/fetch/';
+const PROXY_URL = 'https://proxy.cors.sh/';
 const API_URL = PROXY_URL + 'https://api.topmediai.com/v1/text2speech';
 const API_KEY = '8389ac98a19c49d48f1a022f66f7c6f7'; // Replace with your actual API key
 
