@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextToSpeechApp - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar glass">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="sitemap.html">Sitemap</a></li>
+        </ul>
+    </nav>
+    <main class="container glass">
+        <h1>Text to Speech Converter</h1>
+        <form id="tts-form">
+            <label for="voice-select">Voice:</label>
+            <select id="voice-select" name="voice">
+                <option value="">Select a voice...</option>
+            </select>
+            <label for="emotion-select">Emotion/Tone:</label>
+            <select id="emotion-select" name="emotion">
+                <option value="Neutral">Neutral</option>
+                <option value="Cheerful">Cheerful</option>
+                <option value="Sad">Sad</option>
+                <option value="Excited">Excited</option>
+                <option value="Angry">Angry</option>
+                <!-- Add more as needed -->
+            </select>
+            <label for="tts-text">Enter text:</label>
+            <textarea id="tts-text" name="text" rows="6" placeholder="Type your text here..."></textarea>
+            <button type="submit" id="convert-btn">Convert to Speech</button>
+        </form>
+        <div id="audio-section" class="hidden">
+            <audio id="audio-player" controls></audio>
+            <a id="download-link" href="#" download="tts-audio.mp3" class="button">Download Audio</a>
+        </div>
+        <div id="status-message"></div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
