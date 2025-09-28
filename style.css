@@ -1,110 +1,71 @@
-/* Modern, responsive, glassmorphism, gradients */
 body {
-    margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-    min-height: 100vh;
-}
-.navbar {
-    background: rgba(255,255,255,0.25);
-    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
-    backdrop-filter: blur(8px);
-    border-radius: 16px;
-    margin: 24px auto 32px auto;
-    max-width: 900px;
-    padding: 0.5em 2em;
-}
-.navbar ul {
-    list-style: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
     display: flex;
     justify-content: center;
-    gap: 2em;
-    padding: 0;
+    align-items: center;
+    height: 100vh;
     margin: 0;
+    direction: rtl;
 }
-.navbar a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    padding: 0.5em 1em;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-.navbar a.active, .navbar a:hover {
-    background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
-    color: #fff;
-}
+
 .container {
-    background: rgba(255,255,255,0.35);
-    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 2em;
-    margin-bottom: 32px;
-}
-h1 {
+    background-color: white;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
     text-align: center;
-    color: #2d3a4b;
-    margin-bottom: 1em;
 }
-label {
-    display: block;
-    margin-top: 1em;
-    margin-bottom: 0.5em;
-    color: #2d3a4b;
-    font-weight: 500;
+
+h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
 }
-select, textarea {
+
+textarea {
     width: 100%;
-    padding: 0.75em;
-    border-radius: 12px;
-    border: 1px solid #b0c4de;
-    margin-bottom: 1em;
-    font-size: 1em;
-    background: rgba(255,255,255,0.7);
-    box-shadow: 0 2px 8px rgba(31,38,135,0.07);
+    height: 150px;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
     resize: vertical;
 }
-button, .button {
-    display: inline-block;
-    background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
-    color: #fff;
+
+.options {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+label {
+    margin-left: 10px;
+    color: #555;
+}
+
+select, button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
     border: none;
-    border-radius: 12px;
-    padding: 0.75em 2em;
-    font-size: 1em;
-    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
     cursor: pointer;
-    margin-top: 1em;
-    box-shadow: 0 2px 8px rgba(31,38,135,0.15);
-    transition: background 0.2s, transform 0.2s;
-    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 10px; /* Added margin top */
 }
-button:hover, .button:hover {
-    background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
-    transform: translateY(-2px);
+
+button:hover {
+    background-color: #0056b3;
 }
-#audio-section {
-    margin-top: 2em;
-    text-align: center;
-}
-.hidden {
-    display: none;
-}
-#status-message {
-    margin-top: 1em;
-    text-align: center;
-    color: #2d3a4b;
-    font-weight: 500;
-}
-@media (max-width: 700px) {
-    .container, .navbar {
-        max-width: 98vw;
-        padding: 1em;
-    }
-    h1 {
-        font-size: 1.5em;
-    }
+
+#audio-container {
+    margin-top: 1.5rem;
 }
