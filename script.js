@@ -1,5 +1,6 @@
 // TopMedia AI API integration and UI logic
-const API_URL = 'https://api.topmediai.com/v1/text2speech';
+const PROXY_URL = 'https://thingproxy.freeboard.io/fetch/';
+const API_URL = PROXY_URL + 'https://api.topmediai.com/v1/text2speech';
 const API_KEY = '8389ac98a19c49d48f1a022f66f7c6f7'; // Replace with your actual API key
 
 const voiceSelect = document.getElementById('voice-select');
@@ -15,7 +16,7 @@ const statusMessage = document.getElementById('status-message');
 // Fetch available voices from TopMedia AI (replace with actual endpoint if available)
 async function fetchVoices() {
     voiceSelect.innerHTML = '<option value="">Loading real voices from API...</option>';
-    const url = 'https://api.topmediai.com/v1/voices_list';
+    const url = PROXY_URL + 'https://api.topmediai.com/v1/voices_list';
     const options = {
         method: 'GET',
         headers: {'x-api-key': API_KEY},
